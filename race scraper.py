@@ -36,10 +36,16 @@ print 'total races: ', raceNum, '\n'
 results = {}
 allMistakes = set()
 completed = 0
+racesToScrape = int(input("how many races shall we scrape? enter a number: "))
+if racesToScrape < 0:
+    racesToScrape = 0
+elif racesToScrape > raceNum:
+    racesToScrape = raceNum
+print 'scraping', racesToScrape, 'races ... '
 
 ## main loop
-while raceNum > 1690:
-    url = baseURL + str(raceNum)    # create the next url by appending the race number
+while completed < racesToScrape:
+    url = baseURL + str(raceNum - completed)    # create the next url by appending the race number
     browser.get(url)
     allHTML = browser.execute_script("return document.body.innerHTML") #returns the inner HTML as a string
     soup = BeautifulSoup(allHTML, 'html.parser')    # convert into a beautifulsoup object so i can use its stuff
@@ -50,11 +56,10 @@ while raceNum > 1690:
         mistakes[j] = mistakes[j].get_text()[2:]
     
     # save results
-    results[raceNum] = {'full text': fullText, 'mistakes made': mistakes}
+    results[raceNum - completed] = {'full text': fullText, 'mistakes made': mistakes}
     allMistakes = allMistakes | set(mistakes)
 
     completed += 1
-    raceNum -= 1
 ## end main loop
 
 # ******************************************************************************
