@@ -6,12 +6,13 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 import re
 import sys
+import json
 
 # ******************************************************************************
 
-# create/open output files
-resultsFile = open('raceresults.txt', 'w+')
-mistakesFile = open('mistakes.txt', 'w+')
+### create/open output files
+##resultsFile = open('raceresults.txt', 'w+')
+##mistakesFile = open('mistakes.txt', 'w+')
 
 # ******************************************************************************
 
@@ -45,10 +46,10 @@ print 'scraping', racesToScrape, 'races ... '
 
 ## main loop
 while completed < racesToScrape:
-    url = baseURL + str(raceNum - completed)    # create the next url by appending the race number
+    url = baseURL + str(raceNum - completed)
     browser.get(url)
-    allHTML = browser.execute_script("return document.body.innerHTML") #returns the inner HTML as a string
-    soup = BeautifulSoup(allHTML, 'html.parser')    # convert into a beautifulsoup object so i can use its stuff
+    allHTML = browser.execute_script("return document.body.innerHTML") 
+    soup = BeautifulSoup(allHTML, 'html.parser')    
 
     fullText = soup.find(class_= "fullTextStr").get_text()
     mistakes = soup.find_all("div", class_ = "replayWord")
@@ -78,28 +79,19 @@ commonWordList = ['the', 'be', 'to', 'and', 'a', 'in', 'that', 'have', 'I', 'it'
                      'these', 'give', 'day', 'most', 'us', 'of', 'saw', 'many']
 
 ## record results in files
-for i in results:
-    resultsFile.write(str(i))
-    resultsFile.write('\t')
-    resultsFile.write(str(results[i]['full text']))
-    resultsFile.write('\t')
-    resultsFile.write(str(results[i]['mistakes made']))
-    resultsFile.write('\n')
+with open('raceresults.txt', 'r+') as resultFile:
+    json.dump(results, resultFile)
 
-for mistake in allMistakes:
-    if mistake.lower() in commonWordList:
-        pass
-    else:
-        mistakesFile.write(str(mistake))
-        mistakesFile.write('\n')
+with open('mistakes.txt', 'r+') as mistakesFile:
+    json.dump(list(allMistakes), mistakesFile)
 
 print 'saved data from', completed, 'races!!'
 
 ## clean up    
 browser.close() # close browser window
 browser.quit()  # quits task, clears memory etc
-resultsFile.close()
-mistakesFile.close()
+##resultsFile.close()
+##mistakesFile.close()
 sys.exit(0)
 
 # ******************************************************************************
