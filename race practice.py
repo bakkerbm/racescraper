@@ -6,19 +6,20 @@
 
 import sys
 import random
+import json
 
 # ******************************************************************************
 
 def newWord():
-    # pick a random 'trouble' word and practice it
+    '''pick a random 'trouble' word and practice it'''
     practiceWord = mistakes[random.randint(0, len(mistakes)-1)]
-    practiceWord = practiceWord[0:len(practiceWord)-1] #gets rid of newline character
+##    practiceWord = practiceWord[0:len(practiceWord)-1] #gets rid of newline character
     print 'new word: ', practiceWord
     return practiceWord
 
 
 def practice(practiceWord):
-    
+    '''type word correctly 10 times before moving on'''
     correctCounter = 0
 
     # type word correctly x times     
@@ -36,19 +37,18 @@ def practice(practiceWord):
         else:
             correctCounter = 0
             print 'back to 0'
-    # end while loop
     print 'nice'
 
 # ******************************************************************************
+print 'hey'
 
 # open files created from scraping
-resultsFile = open('raceresults.txt', 'r')
-results = resultsFile.readlines()
-mistakesFile = open('mistakes.txt', 'r')
-mistakes = mistakesFile.readlines()
-resultsFile.close()
-mistakesFile.close()
+with open('raceresults.txt') as resultFile:
+    races = json.load(resultFile)
+with open('mistakes.txt') as mistakesFile:
+    mistakes = json.load(mistakesFile)
 
+print 'word library has ', len(mistakes), 'words'
 print 'cw to change word, exitprogram to exit'
 
 # main loop
