@@ -1,5 +1,6 @@
-# test to pull TypeRacer race data
-
+'''
+ test to pull TypeRacer race data (full texts and mistakes made) from my personal history
+'''
 # ******************************************************************************
 
 from bs4 import BeautifulSoup
@@ -10,23 +11,17 @@ import json
 
 # ******************************************************************************
 
-### create/open output files
-##resultsFile = open('raceresults.txt', 'w+')
-##mistakesFile = open('mistakes.txt', 'w+')
-
-# ******************************************************************************
-
 # use selenium/chromedriver/beautifulsoup to do things
 
 path = r'C:\Users\theja\Documents\python stuff\chromedriver.exe'
 browser = webdriver.Chrome(executable_path = path)
 
-baseURL = 'https://data.typeracer.com/pit/result?id=|tr:softaco|'   # append race number to this
-urlProfile = 'https://data.typeracer.com/pit/profile?user=softaco'  # use this to get total number of races
+baseURL = 'https://data.typeracer.com/pit/result?id=|tr:softaco|'
+urlProfile = 'https://data.typeracer.com/pit/profile?user=softaco'
 
 browser.get(urlProfile)
-allHTML = browser.execute_script("return document.body.innerHTML") #returns the inner HTML as a string
-soup = BeautifulSoup(allHTML, 'html.parser')    # convert into a beautifulsoup object so i can use its stuff
+allHTML = browser.execute_script("return document.body.innerHTML")
+soup = BeautifulSoup(allHTML, 'html.parser')
 raceNum = soup.find(text=re.compile("Races Completed"))
 raceNum = int(raceNum.find_next().get_text().strip())
 print 'total races: ', raceNum, '\n'
@@ -90,8 +85,6 @@ print 'saved data from', completed, 'races!!'
 ## clean up    
 browser.close() # close browser window
 browser.quit()  # quits task, clears memory etc
-##resultsFile.close()
-##mistakesFile.close()
 sys.exit(0)
 
 # ******************************************************************************
